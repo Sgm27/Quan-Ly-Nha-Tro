@@ -173,13 +173,14 @@ fun AddressLocationScreen(navController: NavController) {
             modifier = Modifier.padding(bottom = 8.dp)
         )
 
+        // Nút "Lấy vị trí trên bản đồ"
         Button(
             onClick = { /* TODO: Handle Map Location */ },
             modifier = Modifier
                 .fillMaxWidth()
                 .height(48.dp),
-            colors = ButtonDefaults.buttonColors(containerColor = Color.LightGray),
-            shape = RoundedCornerShape(24.dp)
+            colors = ButtonDefaults.buttonColors(containerColor = Color(0xFFE0E0E0)), // Màu xám nhẹ
+            shape = RoundedCornerShape(6.dp) // Bo nhẹ góc giống nút "Đóng"
         ) {
             Icon(Icons.Default.LocationOn, contentDescription = null, tint = Color.Black)
             Spacer(modifier = Modifier.width(8.dp))
@@ -191,15 +192,16 @@ fun AddressLocationScreen(navController: NavController) {
             )
         }
 
-        Spacer(modifier = Modifier.height(16.dp)) // Increase the space between the buttons
+        Spacer(modifier = Modifier.height(8.dp)) // Khoảng cách nhỏ giữa các nút
 
+        // Nút "Xác nhận địa chỉ & tiếp tục"
         Button(
             onClick = { /* TODO: Handle Confirm Address */ },
             modifier = Modifier
                 .fillMaxWidth()
                 .height(48.dp),
-            colors = ButtonDefaults.buttonColors(containerColor = Color(0xFF4CAF50)),
-            shape = RoundedCornerShape(24.dp)
+            colors = ButtonDefaults.buttonColors(containerColor = Color(0xFF4CAF50)), // Màu xanh lá cây
+            shape = RoundedCornerShape(6.dp) // Bo nhẹ góc giống nút "Tiếp theo"
         ) {
             Text(
                 text = "Xác nhận địa chỉ & tiếp tục",
