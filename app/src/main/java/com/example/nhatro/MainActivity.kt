@@ -85,7 +85,8 @@ class MainActivity : ComponentActivity() {
 fun MainScreen() {
     val navController = rememberNavController() // Khởi tạo NavController
 
-    NavHost(navController = navController, startDestination = "rentalHouse") {
+    NavHost(navController = navController, startDestination = "loginScreen") {
+        composable("loginScreen") { LoginScreen(navController) }
         composable("rentalHouse") { RentalHouseScreen(navController) }
         composable("addressLocation") { AddressLocationScreen(navController) }
     }
