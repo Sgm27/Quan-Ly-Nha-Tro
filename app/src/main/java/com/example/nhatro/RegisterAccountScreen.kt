@@ -45,6 +45,7 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
 import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.getValue
@@ -71,15 +72,18 @@ import androidx.navigation.compose.rememberNavController
 import com.example.nhatro.ui.theme.NhaTroTheme
 import com.example.nhatro.R
 
-
 @Composable
-fun LoginScreen(navController: NavController) {
+fun RegisterAccountScreen(navController: NavController) {
     var email by remember { mutableStateOf("") }
     var password by remember { mutableStateOf("") }
+    var confirmPassword by remember { mutableStateOf("") }
     var emailError by remember { mutableStateOf("") }
+    var registrationMessage by remember { mutableStateOf("") }
+    var isCountingDown by remember { mutableStateOf(false) }
+    var countdownTime by remember { mutableStateOf(3) }
 
     val isEmailValid = android.util.Patterns.EMAIL_ADDRESS.matcher(email).matches()
-    val isButtonEnabled = email.isNotEmpty() && password.isNotEmpty() && isEmailValid // Kiểm tra cả hai ô có dữ liệu và email hợp lệ
+    val isButtonEnabled = email.isNotEmpty() && password.isNotEmpty() && confirmPassword.isNotEmpty() && isEmailValid
 
     Column(
         modifier = Modifier
@@ -137,43 +141,83 @@ fun LoginScreen(navController: NavController) {
 
         Spacer(modifier = Modifier.height(16.dp))
 
-        // Register account text (clickable)
-        Row(
-            modifier = Modifier.fillMaxWidth(),
-            horizontalArrangement = Arrangement.End
-        ) {
-            Text(
-                text = "Đăng ký tài khoản",
-                color = Color(0xFF0B9E43), // Màu xanh lá cây
-                fontSize = 14.sp,
-                modifier = Modifier.clickable {
-                    navController.navigate("registerAccount")
-                }
-            )
-        }
+        // Confirm Password field
+        TextFieldWithLabel(
+            label = "Xác nhận mật khẩu",
+            placeholder = "Nhập lại mật khẩu",
+            keyboardType = KeyboardType.Password,
+            text = confirmPassword,
+            onTextChange = { confirmPassword = it },
+            labelFontSize = 16f,
+            isPassword = true
+        )
 
         Spacer(modifier = Modifier.height(16.dp))
 
-        // Login Button
+        // Register Button
         Button(
             onClick = {
-                if (isButtonEnabled) {
-                    navController.navigate("rentalHouse")
+                if (password == confirmPassword) {
+                    registrationMessage = "Đăng ký tài khoản thành công! Chuyển qua đăng nhập trong $countdownTime giây."
+                    isCountingDown = true
+                } else {
+                    registrationMessage = "Mật khẩu không khớp"
                 }
             },
             modifier = Modifier
                 .fillMaxWidth()
                 .height(48.dp),
             colors = ButtonDefaults.buttonColors(
-                containerColor = if (isButtonEnabled) Color(0xFF0B9E43) else Color(0xFFA5D6A7), // Màu xanh lá cây nhạt khi chưa nhập đủ
+                containerColor = if (isButtonEnabled) Color(0xFF0B9E43) else Color(0xFFA5D6A7), // Màu đậm hơn khi đủ thông tin
                 contentColor = Color.White
             ),
-            shape = RoundedCornerShape(6.dp),
+            shape = RoundedCornerShape(6.dp)
         ) {
             Text(
-                text = "Đăng nhập",
+                text = "Đăng ký",
                 fontSize = 16.sp,
                 fontWeight = FontWeight.Bold
+            )
+        }
+
+        Spacer(modifier = Modifier.height(16.dp))
+
+        // Display registration message
+        if (registrationMessage.isNotEmpty()) {
+            Text(
+                text = registrationMessage,
+                fontSize = 14.sp,
+                color = if (registrationMessage.contains("thành công")) Color.Green else Color.Red,
+                fontWeight = FontWeight.Bold
+            )
+        }
+
+        Spacer(modifier = Modifier.height(16.dp))
+
+        // Countdown logic
+        if (isCountingDown) {
+            LaunchedEffect(Unit) {
+                while (countdownTime > 0) {
+                    kotlinx.coroutines.delay(1000L) // Đợi 1 giây
+                    countdownTime--
+                    registrationMessage = "Đăng ký tài khoản thành công! Chuyển qua đăng nhập trong $countdownTime giây."
+                }
+                navController.navigate("loginScreen") // Chuyển sang màn hình đăng nhập sau khi đếm ngược xong
+            }
+        }
+
+        // Back to Login Button
+        Row(
+            modifier = Modifier.fillMaxWidth(),
+            horizontalArrangement = Arrangement.End
+        ) {
+            Text(
+                text = "Quay lại đăng nhập",
+                color = Color(0xFF0B9E43), // Màu xanh lá cây
+                fontSize = 14.sp,
+                modifier = Modifier.clickable {
+                    navController.navigate("loginScreen") // Chuyển hướng về màn hình đăng nhập
+                }
             )
         }
 
@@ -218,43 +262,3 @@ fun LoginScreen(navController: NavController) {
 }
 
 
-@Composable
-fun TextFieldWithLabel(
-    label: String,
-    placeholder: String,
-    keyboardType: KeyboardType,
-    text: String,
-    onTextChange: (String) -> Unit,
-    labelFontSize: Float,
-    isPassword: Boolean = false
-) {
-    Column(
-        modifier = Modifier
-            .fillMaxWidth()
-            .background(Color(0xFFF1F5F9), shape = MaterialTheme.shapes.medium)
-            .padding(8.dp)
-    ) {
-        Text(
-            text = label,
-            fontSize = labelFontSize.sp,
-            fontWeight = FontWeight.Bold,
-            color = Color(0xFF333333)
-        )
-        Spacer(modifier = Modifier.height(4.dp))
-        OutlinedTextField(
-            value = text,
-            onValueChange = onTextChange,
-            placeholder = { Text(text = placeholder, color = Color.Gray) },
-            modifier = Modifier.fillMaxWidth(),
-            singleLine = true,
-            keyboardOptions = KeyboardOptions(keyboardType = keyboardType),
-            visualTransformation = if (isPassword) PasswordVisualTransformation() else VisualTransformation.None,
-            colors = TextFieldDefaults.colors(
-                unfocusedContainerColor = Color.Transparent,
-                focusedContainerColor = Color.Transparent,
-                unfocusedIndicatorColor = Color.Transparent,
-                focusedIndicatorColor = Color.Transparent
-            )
-        )
-    }
-}

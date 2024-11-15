@@ -87,6 +87,7 @@ fun MainScreen() {
 
     NavHost(navController = navController, startDestination = "loginScreen") {
         composable("loginScreen") { LoginScreen(navController) }
+        composable("registerAccount") { RegisterAccountScreen(navController) }
         composable("rentalHouse") { RentalHouseScreen(navController) }
         composable("addressLocation") { AddressLocationScreen(navController) }
     }
