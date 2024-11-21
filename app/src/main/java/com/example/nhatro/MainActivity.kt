@@ -91,7 +91,7 @@ fun MainScreen() {
         composable("rentalHouse") { RentalHouseScreen(navController) }
         composable("addressLocation") { AddressLocationScreen(navController) }
         composable("homeScreen") { HomeScreen(navController) }
-        composable("addAsset") { AddAsset(navController) }
+        composable("addAsset") { AddAssetScreen(navController) }
     }
 }
 
