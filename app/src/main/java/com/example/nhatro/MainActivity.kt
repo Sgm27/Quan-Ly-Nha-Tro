@@ -1,5 +1,4 @@
 package com.example.nhatro
-import HomeScreen
 import androidx.navigation.NavController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
@@ -86,12 +85,13 @@ class MainActivity : ComponentActivity() {
 fun MainScreen() {
     val navController = rememberNavController() // Khởi tạo NavController
 
-    NavHost(navController = navController, startDestination = "hom") {
+    NavHost(navController = navController, startDestination = "addAsset") {
         composable("loginScreen") { LoginScreen(navController) }
         composable("registerAccount") { RegisterAccountScreen(navController) }
         composable("rentalHouse") { RentalHouseScreen(navController) }
         composable("addressLocation") { AddressLocationScreen(navController) }
         composable("homeScreen") { HomeScreen(navController) }
+        composable("addAsset") { AddAsset(navController) }
     }
 }
 
@@ -404,4 +404,6 @@ fun LabelWithAsterisk(label: String) {
         )
     }
 }
+
+
 
