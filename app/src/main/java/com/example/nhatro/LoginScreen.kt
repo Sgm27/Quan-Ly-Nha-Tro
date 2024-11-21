@@ -158,7 +158,7 @@ fun LoginScreen(navController: NavController) {
         Button(
             onClick = {
                 if (isButtonEnabled) {
-                    navController.navigate("rentalHouse")
+                    navController.navigate("homeScreen")
                 }
             },
             modifier = Modifier
