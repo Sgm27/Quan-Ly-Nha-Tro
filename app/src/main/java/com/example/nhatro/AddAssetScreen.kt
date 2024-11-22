@@ -1,6 +1,10 @@
 package com.example.nhatro
 
+import android.net.Uri
+import androidx.activity.compose.rememberLauncherForActivityResult
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.BorderStroke
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
@@ -17,8 +21,10 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.focus.onFocusChanged
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.text.SpanStyle
 import androidx.compose.ui.text.buildAnnotatedString
 import androidx.compose.ui.text.font.FontWeight
@@ -27,57 +33,7 @@ import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
-
-@OptIn(ExperimentalMaterial3Api::class)
-@Composable
-fun AddAssetScreen(navController: NavController) {
-    Scaffold(
-        topBar = { AddAssetTopBar(navController) }
-    ) { paddingValues ->
-        Column(
-            modifier = Modifier
-                .padding(paddingValues)
-                .fillMaxSize()
-                .background(Color.White)
-        ) {
-            Spacer(modifier = Modifier.height(16.dp))
-
-            // Tên tài sản
-            InputField(title = "Tên tài sản*", hint = "Ví dụ: Tủ lạnh")
-
-            Spacer(modifier = Modifier.height(16.dp))
-
-            // Chọn icon
-            IconGridSection()
-
-            Spacer(modifier = Modifier.height(16.dp))
-
-            // Nút Đóng và Thêm tài sản
-            Row(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(horizontal = 16.dp),
-                horizontalArrangement = Arrangement.SpaceBetween
-            ) {
-                Button(
-                    onClick = { /* Xử lý đóng */ },
-                    modifier = Modifier.weight(1f),
-                    colors = ButtonDefaults.buttonColors(containerColor = Color.LightGray)
-                ) {
-                    Text(text = "Đóng", color = Color.Black)
-                }
-                Spacer(modifier = Modifier.width(8.dp))
-                Button(
-                    onClick = { /* Xử lý thêm tài sản */ },
-                    modifier = Modifier.weight(1f),
-                    colors = ButtonDefaults.buttonColors(containerColor = Color(0xFF4CAF50))
-                ) {
-                    Text(text = "+ Thêm tài sản", color = Color.White)
-                }
-            }
-        }
-    }
-}
+import coil.compose.rememberAsyncImagePainter
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -136,7 +92,116 @@ fun InputField(title: String, hint: String, modifier: Modifier = Modifier) {
     }
 }
 
+@Composable
+fun AddAssetScreen(navController: NavController) {
+    Scaffold(
+        topBar = { AddAssetTopBar(navController) }
+    ) { paddingValues ->
+        Column(
+            modifier = Modifier
+                .padding(paddingValues)
+                .fillMaxSize()
+                .background(Color.White)
+        ) {
+            Spacer(modifier = Modifier.height(16.dp))
 
+            // Tên tài sản
+            InputField(title = "Tên tài sản*", hint = "Ví dụ: Tủ lạnh")
+
+            Spacer(modifier = Modifier.height(16.dp))
+
+            // Chọn ảnh
+            ImagePickerSection()
+
+            Spacer(modifier = Modifier.height(16.dp))
+
+            // Spacer để đẩy các nút xuống dưới
+            Spacer(modifier = Modifier.weight(1f))
+
+            // Nút Đóng và Thêm tài sản nằm ở dưới đáy
+            Row(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(horizontal = 16.dp, vertical = 16.dp), // Tạo khoảng cách với viền hai bên và viền dưới
+                horizontalArrangement = Arrangement.SpaceBetween
+            ) {
+                Button(
+                    onClick = { /* Xử lý đóng */ },
+                    modifier = Modifier
+                        .weight(1f)
+                        .height(48.dp), // Chiều cao của nút
+                    colors = ButtonDefaults.buttonColors(containerColor = Color.LightGray),
+                    shape = RoundedCornerShape(4.dp) // Ít bo góc hơn
+                ) {
+                    Text(text = "Đóng", color = Color.Black)
+                }
+                Spacer(modifier = Modifier.width(8.dp))
+                Button(
+                    onClick = { /* Xử lý thêm tài sản */ },
+                    modifier = Modifier
+                        .weight(1f)
+                        .height(48.dp), // Chiều cao của nút
+                    colors = ButtonDefaults.buttonColors(containerColor = Color(0xFF4CAF50)),
+                    shape = RoundedCornerShape(4.dp) // Ít bo góc hơn
+                ) {
+                    Text(text = "+ Thêm tài sản", color = Color.White)
+                }
+            }
+        }
+    }
+}
+@Composable
+fun ImagePickerSection() {
+    var selectedImageUri by remember { mutableStateOf<Uri?>(null) }
+
+    // Launcher để chọn ảnh từ thư viện
+    val launcher = rememberLauncherForActivityResult(
+        contract = ActivityResultContracts.GetContent()
+    ) { uri: Uri? ->
+        selectedImageUri = uri
+    }
+
+    Column(
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(horizontal = 16.dp),
+        horizontalAlignment = Alignment.CenterHorizontally
+    ) {
+        Text(
+            text = "Chọn ảnh",
+            fontSize = 14.sp,
+            fontWeight = FontWeight.Bold,
+            color = Color.Black,
+            modifier = Modifier.padding(bottom = 8.dp)
+        )
+
+        // Hiển thị ảnh đã chọn hoặc nút chọn ảnh
+        Box(
+            modifier = Modifier
+                .size(240.dp) // Kích thước hộp chứa ảnh
+                .background(Color(0xFFF5F5F5), shape = RoundedCornerShape(8.dp))
+                .border(1.dp, Color.LightGray, shape = RoundedCornerShape(8.dp))
+                .clickable { launcher.launch("image/*") },
+            contentAlignment = Alignment.Center
+        ) {
+            if (selectedImageUri != null) {
+                Image(
+                    painter = rememberAsyncImagePainter(selectedImageUri),
+                    contentDescription = "Ảnh đã chọn",
+                    modifier = Modifier
+                        .fillMaxSize()
+                        .clip(RoundedCornerShape(8.dp)), // Làm tròn góc cho ảnh
+                    contentScale = ContentScale.Crop // Scale ảnh để không bị thừa khoảng trắng
+                )
+            } else {
+                Text(
+                    text = "Chọn ảnh",
+                    color = Color.Gray
+                )
+            }
+        }
+    }
+}
 
 @Composable
 fun AddAssetTopBar(navController: NavController) {
@@ -186,75 +251,6 @@ fun AddAssetTopBar(navController: NavController) {
                 )
             }
 
-        }
-    }
-}
-
-@Composable
-fun IconGridSection() {
-    Column(modifier = Modifier.padding(16.dp)) {
-        Text(
-            text = "Chọn icon",
-            fontSize = 14.sp,
-            fontWeight = FontWeight.Bold,
-            color = Color.Black,
-            modifier = Modifier.padding(bottom = 8.dp)
-        )
-
-        // Danh sách icon minh họa
-        val icons = listOf(
-            Icons.Default.Home, // Icon giả lập
-            Icons.Default.Settings,
-            Icons.Default.Person,
-            Icons.Default.Search,
-            Icons.Default.Edit,
-            Icons.Default.Info,
-            Icons.Default.Add,
-            Icons.Default.Close,
-            Icons.Default.Check,
-            Icons.Default.ArrowBack,
-            Icons.Default.ArrowForward,
-            Icons.Default.ArrowDropDown
-        )
-
-        val selectedIcon = remember { mutableStateOf(-1) } // -1 nghĩa là chưa chọn icon nào
-
-        // Hiển thị các icon với khoảng cách nhỏ hơn
-        Column(modifier = Modifier.fillMaxWidth()) {
-            icons.chunked(6).forEachIndexed { rowIndex, rowIcons -> // Hiển thị 6 icon trên mỗi hàng
-                Row(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(vertical = 4.dp),
-                    horizontalArrangement = Arrangement.spacedBy(8.dp) // Khoảng cách giữa các icon
-                ) {
-                    rowIcons.forEachIndexed { columnIndex, icon ->
-                        val index = rowIndex * 6 + columnIndex
-                        Box(
-                            modifier = Modifier
-                                .size(56.dp) // Kích thước mỗi ô icon
-                                .background(
-                                    color = if (selectedIcon.value == index) Color(0xFFE0E0E0) else Color(0xFFF5F5F5),
-                                    shape = RoundedCornerShape(8.dp)
-                                )
-                                .border(
-                                    width = 1.dp,
-                                    color = if (selectedIcon.value == index) Color.Black else Color.LightGray,
-                                    shape = RoundedCornerShape(8.dp)
-                                )
-                                .clickable { selectedIcon.value = index },
-                            contentAlignment = Alignment.Center
-                        ) {
-                            Icon(
-                                imageVector = icon,
-                                contentDescription = "Icon $index",
-                                tint = Color.Black,
-                                modifier = Modifier.size(24.dp)
-                            )
-                        }
-                    }
-                }
-            }
         }
     }
 }
