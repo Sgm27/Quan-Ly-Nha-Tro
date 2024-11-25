@@ -56,6 +56,8 @@ dependencies {
     implementation(platform("androidx.compose:compose-bom:2024.10.00"))
     implementation("androidx.compose.foundation:foundation:1.5.0")
     implementation("io.coil-kt:coil-compose:2.4.0")
+    implementation("androidx.compose.material:material-icons-extended:1.0.1")
+    implementation ("androidx.compose.material3:material3:1.1.0")
 
     // Các thư viện cơ bản của Compose
     implementation("androidx.compose.ui:ui")

@@ -9,6 +9,8 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
@@ -34,66 +36,18 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import coil.compose.rememberAsyncImagePainter
-
-@OptIn(ExperimentalMaterial3Api::class)
-@Composable
-fun InputField(title: String, hint: String, modifier: Modifier = Modifier) {
-    var text by remember { mutableStateOf("") } // Quản lý giá trị nhập
-    var isFocused by remember { mutableStateOf(false) } // Trạng thái focus
-
-    Column(modifier = modifier.padding(horizontal = 16.dp)) {
-        // Hiển thị tiêu đề với dấu sao đỏ (nếu có)
-        Row(verticalAlignment = Alignment.CenterVertically) {
-            Text(
-                text = title.replace("*", ""), // Loại bỏ dấu "*" trong tiêu đề
-                fontSize = 14.sp,
-                fontWeight = FontWeight.Bold,
-                color = Color.Black
-            )
-            if (title.contains("*")) {
-                Text(
-                    text = "*",
-                    fontSize = 14.sp,
-                    fontWeight = FontWeight.Bold,
-                    color = Color.Red // Màu đỏ cho dấu sao
-                )
-            }
-        }
-
-        Spacer(modifier = Modifier.height(8.dp)) // Khoảng cách giữa tiêu đề và TextField
-
-        // TextField với nền thay đổi khi focus
-        Box(
-            modifier = Modifier
-                .fillMaxWidth()
-                .background(
-                    color = if (isFocused) Color(0xFFF5F5F5) else Color.White, // Nền xám khi focus
-                    shape = RoundedCornerShape(8.dp)
-                )
-                .border(1.dp, Color.LightGray, shape = RoundedCornerShape(8.dp)) // Viền xám nhạt
-                .height(56.dp) // Chiều cao TextField
-        ) {
-            TextField(
-                value = text,
-                onValueChange = { text = it },
-                placeholder = { Text(text = hint, color = Color.Gray) }, // Placeholder màu xám
-                modifier = Modifier
-                    .fillMaxSize()
-                    .onFocusChanged { isFocused = it.isFocused }, // Cập nhật trạng thái focus
-                colors = TextFieldDefaults.colors(
-                    focusedContainerColor = Color.Transparent, // Xóa màu nền mặc định khi focus
-                    unfocusedContainerColor = Color.Transparent, // Xóa màu nền mặc định khi unfocus
-                    cursorColor = Color.Black, // Màu con trỏ
-                    focusedIndicatorColor = Color.Transparent, // Ẩn viền focus mặc định
-                    unfocusedIndicatorColor = Color.Transparent // Ẩn viền unfocus mặc định
-                )
-            )
-        }
-    }
-}
+import com.example.nhatro.AddAssetTopBar
 
 @Composable
-fun AddAssetScreen(navController: NavController) {
+fun ShowAssetScreen(navController: NavController) {
+    // Danh sách tài sản mẫu
+    val assetList = listOf(
+        Asset(name = "Tủ lạnh", imageUri = null),
+        Asset(name = "Máy giặt", imageUri = null),
+        Asset(name = "Quạt điện", imageUri = null),
+        Asset(name = "Bàn học", imageUri = null)
+    )
+
     Scaffold(
         topBar = { AddAssetTopBar(navController) }
     ) { paddingValues ->
@@ -105,33 +59,39 @@ fun AddAssetScreen(navController: NavController) {
         ) {
             Spacer(modifier = Modifier.height(16.dp))
 
-            // Tên tài sản
-            InputField(title = "Tên tài sản*", hint = "Ví dụ: Tủ lạnh")
+            Text(
+                text = "Danh sách tài sản",
+                fontSize = 18.sp,
+                fontWeight = FontWeight.Bold,
+                color = Color.Black,
+                modifier = Modifier.padding(start = 16.dp, bottom = 8.dp)
+            )
 
-            Spacer(modifier = Modifier.height(16.dp))
+            // Hiển thị danh sách tài sản
+            LazyColumn(
+                modifier = Modifier
+                    .fillMaxSize()
+                    .padding(horizontal = 16.dp)
+            ) {
+                items(assetList) { asset ->
+                    AssetItem(asset = asset)
+                }
+            }
 
-            // Chọn ảnh
-            ImagePickerSection()
-
-            Spacer(modifier = Modifier.height(16.dp))
-
-            // Spacer để đẩy các nút xuống dưới
-            Spacer(modifier = Modifier.weight(1f))
-
-            // Nút Đóng và Thêm tài sản nằm ở dưới đáy
+            // Nút thêm tài sản ở cuối
             Row(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .padding(horizontal = 16.dp, vertical = 16.dp), // Tạo khoảng cách với viền hai bên và viền dưới
+                    .padding(horizontal = 16.dp, vertical = 16.dp),
                 horizontalArrangement = Arrangement.SpaceBetween
             ) {
                 Button(
-                    onClick = { /* Xử lý đóng */ },
+                    onClick = { /* Xử lý quay lại */ },
                     modifier = Modifier
                         .weight(1f)
-                        .height(48.dp), // Chiều cao của nút
+                        .height(48.dp),
                     colors = ButtonDefaults.buttonColors(containerColor = Color.LightGray),
-                    shape = RoundedCornerShape(4.dp) // Ít bo góc hơn
+                    shape = RoundedCornerShape(4.dp)
                 ) {
                     Text(text = "Đóng", color = Color.Black)
                 }
@@ -140,9 +100,9 @@ fun AddAssetScreen(navController: NavController) {
                     onClick = { /* Xử lý thêm tài sản */ },
                     modifier = Modifier
                         .weight(1f)
-                        .height(48.dp), // Chiều cao của nút
+                        .height(48.dp),
                     colors = ButtonDefaults.buttonColors(containerColor = Color(0xFF4CAF50)),
-                    shape = RoundedCornerShape(4.dp) // Ít bo góc hơn
+                    shape = RoundedCornerShape(4.dp)
                 ) {
                     Text(text = "+ Thêm tài sản", color = Color.White)
                 }
@@ -150,107 +110,63 @@ fun AddAssetScreen(navController: NavController) {
         }
     }
 }
+
 @Composable
-fun ImagePickerSection() {
-    var selectedImageUri by remember { mutableStateOf<Uri?>(null) }
-
-    // Launcher để chọn ảnh từ thư viện
-    val launcher = rememberLauncherForActivityResult(
-        contract = ActivityResultContracts.GetContent()
-    ) { uri: Uri? ->
-        selectedImageUri = uri
-    }
-
-    Column(
+fun AssetItem(asset: Asset) {
+    Row(
+        verticalAlignment = Alignment.CenterVertically,
         modifier = Modifier
             .fillMaxWidth()
-            .padding(horizontal = 16.dp),
-        horizontalAlignment = Alignment.CenterHorizontally
+            .padding(vertical = 8.dp)
+            .background(Color(0xFFF5F5F5), shape = RoundedCornerShape(8.dp))
+            .border(1.dp, Color.LightGray, shape = RoundedCornerShape(8.dp))
+            .clickable { /* Thao tác khi nhấn vào tài sản */ }
+            .padding(16.dp)
     ) {
-        Text(
-            text = "Chọn ảnh",
-            fontSize = 14.sp,
-            fontWeight = FontWeight.Bold,
-            color = Color.Black,
-            modifier = Modifier.padding(bottom = 8.dp)
-        )
-
-        // Hiển thị ảnh đã chọn hoặc nút chọn ảnh
+        // Hiển thị hình ảnh tài sản (nếu có)
         Box(
             modifier = Modifier
-                .size(240.dp) // Kích thước hộp chứa ảnh
-                .background(Color(0xFFF5F5F5), shape = RoundedCornerShape(8.dp))
-                .border(1.dp, Color.LightGray, shape = RoundedCornerShape(8.dp))
-                .clickable { launcher.launch("image/*") },
+                .size(64.dp)
+                .background(Color.Gray, shape = CircleShape)
+                .clip(CircleShape),
             contentAlignment = Alignment.Center
         ) {
-            if (selectedImageUri != null) {
+            if (asset.imageUri != null) {
                 Image(
-                    painter = rememberAsyncImagePainter(selectedImageUri),
-                    contentDescription = "Ảnh đã chọn",
-                    modifier = Modifier
-                        .fillMaxSize()
-                        .clip(RoundedCornerShape(8.dp)), // Làm tròn góc cho ảnh
-                    contentScale = ContentScale.Crop // Scale ảnh để không bị thừa khoảng trắng
+                    painter = rememberAsyncImagePainter(asset.imageUri),
+                    contentDescription = "Hình ảnh tài sản",
+                    modifier = Modifier.size(64.dp),
+                    contentScale = ContentScale.Crop
                 )
             } else {
-                Text(
-                    text = "Chọn ảnh",
-                    color = Color.Gray
-                )
-            }
-        }
-    }
-}
-
-@Composable
-fun AddAssetTopBar(navController: NavController) {
-    Surface(
-        modifier = Modifier
-            .fillMaxWidth()
-            .height(56.dp),
-        color = Color(0xFFF5F5F5) // Màu trắng đục
-    ) {
-        Row(
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(horizontal = 16.dp),
-            verticalAlignment = Alignment.CenterVertically
-        ) {
-            // Nút Back
-            Box(
-                modifier = Modifier
-                    .size(36.dp)
-                    .border(1.dp, Color.Gray, shape = CircleShape)
-                    .background(Color.White, shape = CircleShape)
-                    .clickable { navController.popBackStack() },
-                contentAlignment = Alignment.Center
-            ) {
                 Icon(
-                    imageVector = Icons.Default.ArrowBack,
-                    contentDescription = "Back Icon",
-                    tint = Color.Black
+                    imageVector = Icons.Default.Home, // Icon mặc định nếu không có ảnh
+                    contentDescription = "No Image",
+                    tint = Color.White
                 )
             }
+        }
 
-            Spacer(modifier = Modifier.width(12.dp))
+        Spacer(modifier = Modifier.width(16.dp))
 
-            // Tiêu đề và phụ đề
-            Column {
-                Text(
-                    text = "Thêm tài sản",
-                    color = Color.Black,
-                    fontSize = 18.sp,
-                    fontWeight = FontWeight.Bold // Đậm cho tiêu đề
-                )
-                Text(
-                    text = "Nhà trọ Đức Sơn",
-                    color = Color.Gray,
-                    fontSize = 14.sp,
-                    fontWeight = FontWeight.Medium // Đậm hơn một chút so với mặc định
-                )
-            }
-
+        // Hiển thị thông tin tài sản
+        Column {
+            Text(
+                text = asset.name,
+                fontSize = 16.sp,
+                fontWeight = FontWeight.Bold,
+                color = Color.Black
+            )
+            Text(
+                text = "Nhấn để xem chi tiết",
+                fontSize = 14.sp,
+                color = Color.Gray
+            )
         }
     }
 }
+
+data class Asset(
+    val name: String,
+    val imageUri: Uri? = null // URI của hình ảnh tài sản
+)
