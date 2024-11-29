@@ -66,7 +66,7 @@ import com.example.nhatro.ui.theme.NhaTroTheme
 import com.example.nhatro.R
 import com.example.nhatro.moreinfo.MoreInformationScreen
 import com.example.nhatro.showasset.ShowAssetScreen
-import com.example.nhatro.userinfo.CreateContractScreen
+import com.example.nhatro.contract.CreateContractScreen
 import com.example.nhatro.userinfo.UserInformationScreen
 
 class MainActivity : ComponentActivity() {

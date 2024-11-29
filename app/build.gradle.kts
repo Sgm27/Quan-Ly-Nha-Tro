@@ -58,6 +58,7 @@ dependencies {
     implementation("io.coil-kt:coil-compose:2.4.0")
     implementation("androidx.compose.material:material-icons-extended:1.0.1")
     implementation ("androidx.compose.material3:material3:1.1.0")
+    api("androidx.compose.material3:material3:1.0.0-alpha14")
 
     // Các thư viện cơ bản của Compose
     implementation("androidx.compose.ui:ui")
@@ -76,6 +77,7 @@ dependencies {
 
     // DataStore
     implementation("androidx.datastore:datastore-preferences:1.0.0")
+    implementation(libs.androidx.appcompat)
 
     // Testing Libraries
     testImplementation("junit:junit:4.13.2")
