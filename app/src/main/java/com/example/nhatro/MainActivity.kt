@@ -66,6 +66,8 @@ import com.example.nhatro.ui.theme.NhaTroTheme
 import com.example.nhatro.R
 import com.example.nhatro.moreinfo.MoreInformationScreen
 import com.example.nhatro.showasset.ShowAssetScreen
+import com.example.nhatro.userinfo.CreateContractScreen
+import com.example.nhatro.userinfo.UserInformationScreen
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -87,7 +89,7 @@ class MainActivity : ComponentActivity() {
 fun MainScreen() {
     val navController = rememberNavController() // Khởi tạo NavController
 
-    NavHost(navController = navController, startDestination = "moreInfo") {
+    NavHost(navController = navController, startDestination = "contractInfo") {
         composable("loginScreen") { LoginScreen(navController) }
         composable("registerAccount") { RegisterAccountScreen(navController) }
         composable("rentalHouse") { RentalHouseScreen(navController) }
@@ -97,6 +99,8 @@ fun MainScreen() {
         composable("addContract") { AddContractScreen(navController) }
         composable("showAsset") { ShowAssetScreen(navController) }
         composable("moreInfo") { MoreInformationScreen(navController) }
+        composable("userInfo") { UserInformationScreen(navController) }
+        composable("contractInfo") { CreateContractScreen(navController) }
     }
 }
 

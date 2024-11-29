@@ -53,7 +53,7 @@ android {
 
 dependencies {
     // Compose BOM (Bill of Materials) quản lý phiên bản
-    implementation(platform("androidx.compose:compose-bom:2024.10.00"))
+    implementation(platform("androidx.compose:compose-bom:2024.11.00"))
     implementation("androidx.compose.foundation:foundation:1.5.0")
     implementation("io.coil-kt:coil-compose:2.4.0")
     implementation("androidx.compose.material:material-icons-extended:1.0.1")
