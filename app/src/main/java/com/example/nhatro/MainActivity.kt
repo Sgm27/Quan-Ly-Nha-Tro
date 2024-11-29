@@ -67,6 +67,7 @@ import com.example.nhatro.R
 import com.example.nhatro.moreinfo.MoreInformationScreen
 import com.example.nhatro.showasset.ShowAssetScreen
 import com.example.nhatro.contract.CreateContractScreen
+import com.example.nhatro.makeinvoice.MakeInvoiceScreen
 import com.example.nhatro.userinfo.UserInformationScreen
 
 class MainActivity : ComponentActivity() {
@@ -89,7 +90,7 @@ class MainActivity : ComponentActivity() {
 fun MainScreen() {
     val navController = rememberNavController() // Khởi tạo NavController
 
-    NavHost(navController = navController, startDestination = "contractInfo") {
+    NavHost(navController = navController, startDestination = "makeInvoice") {
         composable("loginScreen") { LoginScreen(navController) }
         composable("registerAccount") { RegisterAccountScreen(navController) }
         composable("rentalHouse") { RentalHouseScreen(navController) }
@@ -100,7 +101,8 @@ fun MainScreen() {
         composable("showAsset") { ShowAssetScreen(navController) }
         composable("moreInfo") { MoreInformationScreen(navController) }
         composable("userInfo") { UserInformationScreen(navController) }
-        composable("contractInfo") { CreateContractScreen(navController) }
+        composable("contractInfo") { CreateContractScreen(navController, "123") }
+        composable("makeInvoice") { MakeInvoiceScreen(navController, "123") }
     }
 }
 

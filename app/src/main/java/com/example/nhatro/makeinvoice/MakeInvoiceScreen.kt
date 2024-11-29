@@ -1,4 +1,5 @@
-package com.example.nhatro.contract
+package com.example.nhatro.makeinvoice
+
 
 import android.widget.DatePicker
 import androidx.compose.foundation.background
@@ -26,7 +27,7 @@ import androidx.navigation.NavController
 import java.util.*
 
 @Composable
-fun CreateContractScreen(navController: NavController, roomId: String) {
+fun MakeInvoiceScreen(navController: NavController, roomId: String) {
     Scaffold(
         topBar = { CreateContractTopBar(navController) },
         content = { paddingValues ->
@@ -471,7 +472,7 @@ fun CreateContractTopBar(navController: NavController) {
             // Tiêu đề và phụ đề
             Column {
                 Text(
-                    text = "Lập hợp đồng mới",
+                    text = "Lập hóa đơn",
                     color = Color.Black,
                     fontSize = 18.sp,
                     fontWeight = FontWeight.Bold
